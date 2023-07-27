@@ -1,0 +1,12 @@
+<div class="container">
+  <form (ngSubmit)="save()" [formGroup]="contactForm">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="string" class="form-control mb-2" id="name" aria-describedby="name" formControlName="name" placeholder="Enter name">
+    </div>
+    <app-phone formControlName="phoneNumber"></app-phone>
+    <button type="submit" class="btn btn-primary mb-2">Submit</button>
+  </form>
+
+  <pre>{{contactForm.value | json}}</pre>
+</div>

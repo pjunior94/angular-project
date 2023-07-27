@@ -1,0 +1,17 @@
+<form [formGroup]="phoneForm">
+  <div class="form-group">
+    <label for="phone">Phone</label>
+    <select class="form-select mb-2" formControlName="countryCode" aria-label="Default select example"
+      (change)="onFieldChange()">
+      <option selected>Select</option>
+      <option value="+55">BR (+55)</option>
+      <option value="+351">PT (+351)</option>
+      <option value="+41">UK (+41)</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <input type="tel" class="form-control mb-2" formControlName="phoneNumber" id="phone" placeholder="Phone"
+      (input)="onFieldChange()">
+  </div>
+</form>

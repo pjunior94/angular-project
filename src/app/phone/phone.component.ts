@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormBuilder, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { customValidation } from "../validators/validator.directive";
 
 @Component({
   selector: 'app-phone',
@@ -11,17 +12,22 @@ import { Subscription } from 'rxjs';
       provide: NG_VALUE_ACCESSOR,
       multi: true,
       useExisting: PhoneComponent
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: PhoneComponent
     }
   ]
 })
-export class PhoneComponent implements ControlValueAccessor {
+export class PhoneComponent implements ControlValueAccessor, Validators {
 
   constructor(private fb: FormBuilder) { }
 
   phoneForm: FormGroup = this.fb.group({
-    countryCode: ['', [Validators.required]],
-    phoneNumber: ['', [Validators.required]]
-  });
+    countryCode: [''],
+    phoneNumber: ['']
+  }, { validators: customValidation });
 
   // onTouched: Function = () => { };
 
@@ -61,6 +67,38 @@ export class PhoneComponent implements ControlValueAccessor {
     const concatenatedNumber = `${countryCode}${phoneNumber}`;
 
     this.onChangeCallback(concatenatedNumber);
+  }
+
+  validate(control: AbstractControl) {
+    if (this.phoneForm.valid) {
+      return null;
+    }
+
+    let errors: any = {};
+
+    //request api and assign error to the object
+    errors.isPhoneValid = false
+
+    // if you have to validate errors on the contryCode select or phoneNumber input you can manage to assign a property to 
+    // the errors object here.
+
+    errors = this.addControlErrors(errors, "countryCode");
+    errors = this.addControlErrors(errors, "phoneNumber");
+
+    return errors;
+  }
+
+  addControlErrors(allErrors: any, controlName: string) {
+
+    const errors = { ...allErrors };
+
+    const controlErrors = this.phoneForm.controls[controlName].errors;
+
+    if (controlErrors) {
+      errors[controlName] = controlErrors;
+    }
+
+    return errors;
   }
 
 }

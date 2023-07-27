@@ -9,4 +9,6 @@
   </form>
 
   <pre>{{contactForm.value | json}}</pre>
+  <pre>Are there errors? {{contactForm.get('phoneNumber')?.errors?.['isPhoneValid'] | json}}</pre>
+  <pre>Errors: {{contactForm.get('phoneNumber')?.errors | json}}</pre>
 </div>

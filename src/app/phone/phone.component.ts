@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormBuilder, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { customValidation } from "../validators/validator.directive";
+import { AsyncValidatorExample } from '../validators/phone-validator.directive';
 
 @Component({
   selector: 'app-phone',
@@ -22,12 +23,12 @@ import { customValidation } from "../validators/validator.directive";
 })
 export class PhoneComponent implements ControlValueAccessor, Validators {
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private asyncValidatorExample: AsyncValidatorExample) { }
 
   phoneForm: FormGroup = this.fb.group({
     countryCode: [''],
     phoneNumber: ['']
-  }, { validators: customValidation });
+  }, { asyncValidators: [this.asyncValidatorExample.validate.bind(this.asyncValidatorExample)] });
 
   // onTouched: Function = () => { };
 
@@ -76,15 +77,10 @@ export class PhoneComponent implements ControlValueAccessor, Validators {
 
     let errors: any = {};
 
-    //request api and assign error to the object
-    errors.isPhoneValid = false
-
-    // if you have to validate errors on the contryCode select or phoneNumber input you can manage to assign a property to 
-    // the errors object here.
-
     errors = this.addControlErrors(errors, "countryCode");
     errors = this.addControlErrors(errors, "phoneNumber");
 
+    //ver aqui se os errors disparados no async validator são retornados.
     return errors;
   }
 
